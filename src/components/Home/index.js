@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-// import { useJsApiLoader } from '@react-google-maps/api'; // REMOVED
 import MapComponent from '../MapComponent';
 import FlexyForm from '../FlexyForm';
 import LoadingView from '../LoadingView';
 import './index.css';
 
-// REMOVED MAPS_API and libraries constant
 
 const fallbackCenter = {
   lat: 17.9689, 
@@ -15,8 +13,6 @@ const fallbackCenter = {
 const Home = () => {
   const [currentCenter, setCurrentCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null); 
-
-  // REMOVED: Script loader
 
   useEffect(() => {
     const geoOptions = {
@@ -30,16 +26,24 @@ const Home = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           const userLocation = { lat: latitude, lng: longitude };
+          // --- FIX ---
+          // Set BOTH the map center and the marker position with the detected location
           setCurrentCenter(userLocation);
+          setMarkerPosition(userLocation); // This will auto-fill the form
         },
         () => {
           console.error("Could not get location. Defaulting to fallback.");
+          // Alert the user and then set a fallback
+          alert(
+            "Could not get your location. Please ensure you have enabled location permissions for this site in your browser settings (check the lock icon in the address bar)."
+          );
           setCurrentCenter(fallbackCenter);
         },
         geoOptions
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
+      alert("Geolocation is not supported by this browser.");
       setCurrentCenter(fallbackCenter);
     }
   }, []);
@@ -53,12 +57,11 @@ const Home = () => {
   };
 
   
-  // SIMPLIFIED: Only wait for currentCenter, as map loading is handled by App.js
   if (!currentCenter) {
     return <LoadingView />;
   }
 
-  // Create a marker with the structure MapComponent expects
+  // This logic remains the same, creating a marker from the markerPosition state
   const markersForMap = markerPosition
     ? [
         {
@@ -79,6 +82,7 @@ const Home = () => {
         markers={markersForMap}
         center={currentCenter}
       />
+      {/* The form now receives the auto-detected location via markerPosition */}
       <FlexyForm pinnedLocation={markerPosition} />
     </div>
   );
