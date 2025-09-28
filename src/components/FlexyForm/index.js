@@ -37,6 +37,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     ownerName: '',
     notes: '',
     image: null,
+    imageUrl: null, 
   });
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(STATUS.IDLE);
@@ -55,6 +56,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         ownerName: existingFlexy.ownerName || '',
         notes: existingFlexy.notes || '',
         image: null,
+        imageUrl: existingFlexy.imageUrl || null, 
       });
     }
   }, [existingFlexy]);
@@ -65,14 +67,13 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   };
 
   const handleImageUpload = (file) => {
-    setFormData((prev) => ({ ...prev, image: file }));
+    setFormData((prev) => ({ ...prev, image: file, imageUrl: null }));
   };
 
   const handleImageRemove = () => {
     setFormData((prev) => ({...prev, image: null, imageUrl: null }));
   };
 
-  // --- New Cancel Handler ---
   const handleCancel = () => {
     navigate('/view-all-flexy');
   };
@@ -80,7 +81,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   const validateForm = () => {
     const newErrors = {};
     if (!pinnedLocation && !existingFlexy) newErrors.location = 'A location must be pinned on the map.';
-    if (!formData.image && !existingFlexy) newErrors.image = 'An image is required.';
+    if (!formData.image && !formData.imageUrl) newErrors.image = 'An image is required.';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -96,6 +97,8 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     
     const submissionData = new FormData();
     Object.keys(formData).forEach(key => {
+        if (key === 'imageUrl') return; 
+        
         if (key === 'image' && formData.image) {
             submissionData.append('image', formData.image);
         } else if (key !== 'image' && formData[key]) {
@@ -140,7 +143,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     <form className="flexy-form" onSubmit={handleSubmit} noValidate>
       <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
       
-      {/* Form groups remain the same... */}
       <div className="form-group">
         <label>Upload Picture</label>
         <ImageUpload
@@ -219,8 +221,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         <label>Notes / Description (Optional)</label>
         <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
       </div>
-      
-      {/* --- Updated Button Container --- */}
+
       <div className="form-actions">
         <button type="submit" className="submit-btn" disabled={submitStatus === STATUS.LOADING}>
           {submitStatus === STATUS.LOADING ? 'Submitting...' : (existingFlexy ? 'Update Flexy' : 'Add Flexy')}
