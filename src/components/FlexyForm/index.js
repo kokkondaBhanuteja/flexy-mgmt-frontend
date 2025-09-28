@@ -37,6 +37,8 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     ownerName: '',
     notes: '',
     image: null,
+    // Add imageUrl to state to track existing image
+    imageUrl: null, 
   });
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(STATUS.IDLE);
@@ -55,6 +57,8 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         ownerName: existingFlexy.ownerName || '',
         notes: existingFlexy.notes || '',
         image: null,
+        // Populate imageUrl with the existing image URL
+        imageUrl: existingFlexy.imageUrl || null, 
       });
     }
   }, [existingFlexy]);
@@ -65,14 +69,15 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   };
 
   const handleImageUpload = (file) => {
-    setFormData((prev) => ({ ...prev, image: file }));
+    // When a new image is uploaded, we clear the existing URL (if any)
+    setFormData((prev) => ({ ...prev, image: file, imageUrl: null }));
   };
 
   const handleImageRemove = () => {
+    // When image is removed, we clear both the new image file and the existing URL
     setFormData((prev) => ({...prev, image: null, imageUrl: null }));
   };
 
-  // --- New Cancel Handler ---
   const handleCancel = () => {
     navigate('/view-all-flexy');
   };
@@ -80,7 +85,9 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   const validateForm = () => {
     const newErrors = {};
     if (!pinnedLocation && !existingFlexy) newErrors.location = 'A location must be pinned on the map.';
-    if (!formData.image && !existingFlexy) newErrors.image = 'An image is required.';
+    
+    // VALIDATION FIX: Check for EITHER a newly uploaded file OR an existing image URL
+    if (!formData.image && !formData.imageUrl) newErrors.image = 'An image is required.';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -96,11 +103,21 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     
     const submissionData = new FormData();
     Object.keys(formData).forEach(key => {
+        // Skip client-side imageUrl state variable
+        if (key === 'imageUrl') return; 
+        
+        // Append new image if it exists
         if (key === 'image' && formData.image) {
             submissionData.append('image', formData.image);
         } else if (key !== 'image' && formData[key]) {
+             // Append other fields
              submissionData.append(key, formData[key]);
         }
+        
+        // CRITICAL NOTE: If formData.image is null (no new image uploaded), 
+        // the 'image' field is intentionally *not* appended to FormData. 
+        // The backend must be configured to recognize the absence of the 'image' 
+        // field for a PATCH request as an instruction to *keep the existing image*.
     });
 
     if (pinnedLocation) {
@@ -123,7 +140,9 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       navigate('/view-all-flexy');
     } catch (error) {
       console.error('Submission failed:', error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || 'Could not submit flexy.'}`);
+      // If the backend is returning "File is required", this is the correct client-side message for now.
+      // But if the validation error is only about the image, the server might still be incorrectly expecting it.
+      alert(`Error: ${error.response?.data?.message || 'Could not submit flexy. The server might still be requiring an image file for updates.'}`);
       setSubmitStatus(STATUS.FAILURE);
     }
   };
@@ -140,7 +159,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     <form className="flexy-form" onSubmit={handleSubmit} noValidate>
       <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
       
-      {/* Form groups remain the same... */}
       <div className="form-group">
         <label>Upload Picture</label>
         <ImageUpload
