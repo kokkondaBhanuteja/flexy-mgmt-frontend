@@ -1,23 +1,15 @@
 import { useCallback, useState } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
-import LoadingView from '../LoadingView';
+import { GoogleMap, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import HoardingDetailsPopup from '../HoardingDetailsPopup';
 import './index.css';
 
-const MAPS_API = process.env.REACT_APP_GOOGLE_MAPS_API;
-
 const MapComponent = ({ onMapClick, markers, center, directions }) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: MAPS_API,
-    libraries: ['geometry', 'places'],
-  });
-
   const [map, setMap] = useState(null);
   const [activeMarker, setActiveMarker] = useState(null);
   const [selectedHoarding, setSelectedHoarding] = useState(null);
 
-  const customMarkerIcon = isLoaded ? {
+  // The custom icon now needs a check for `window.google`
+  const customMarkerIcon = (window.google && window.google.maps) ? {
     url: 'https://res.cloudinary.com/disrq2eh8/image/upload/v1758967291/placeholder_ww4rii.png',
     scaledSize: new window.google.maps.Size(40, 40),
   } : null;
@@ -52,10 +44,6 @@ const MapComponent = ({ onMapClick, markers, center, directions }) => {
   const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
-
-  if (!isLoaded) {
-    return <LoadingView />;
-  }
 
   return (
     <div className="map-container-inner">

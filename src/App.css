@@ -1,12 +1,12 @@
 /* src/App.css */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #F0F2F5;
+  background-color: #f0f2f5;
   color: #212529;
 }
 
@@ -19,7 +19,7 @@ main {
 }
 
 h2 {
-    color: #0A74DA;
+  color: #0a74da;
 }
 
 @keyframes fadeIn {
@@ -31,4 +31,30 @@ h2 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* Styling for Google Maps Autocomplete Suggestions */
+.pac-container {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dfe1e5;
+  margin-top: 5px;
+}
+
+.pac-item {
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-top: 1px solid #f1f1f1;
+}
+
+.pac-item:first-child {
+  border-top: none;
+}
+
+.pac-item:hover {
+  background-color: #f7f7f7;
+}
+
+.pac-item-query {
+  font-weight: 500;
 }

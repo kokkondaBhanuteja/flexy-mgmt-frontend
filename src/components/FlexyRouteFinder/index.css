@@ -7,34 +7,54 @@
 
 .search-container {
   margin-bottom: 20px;
-  padding: 5px;
+  padding: 20px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 15px;
   align-items: center;
-  flex-wrap: wrap;
+}
+
+.route-finder-title {
+  margin: 0 0 10px;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.inputs-wrapper {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.autocomplete-wrapper {
+  flex-grow: 1;
 }
 
 .search-container input {
-  flex-grow: 1;
-  padding: 10px;
+  width: 100%;
+  padding: 12px 15px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  min-width: 200px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  gap: 10px;
 }
 
 .search-container button {
-  padding: 10px 15px; /* Smaller button */
+  padding: 12px 20px;
   border: none;
   background-color: #0A74DA;
   color: white;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.95rem; /* Smaller font */
-  flex-shrink: 0;
+  font-size: 1rem;
   transition: background-color 0.3s;
 }
 
@@ -51,22 +71,19 @@
 }
 
 @media (max-width: 768px) {
-  .search-container {
+  .inputs-wrapper {
     flex-direction: column;
     align-items: stretch;
   }
-
-  .search-container input,
-  .search-container button {
-    width: 80%;
-  }
 }
+
 .range-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
   width: 100%;
+  max-width: 500px;
 }
 
 .range-container label {
@@ -76,7 +93,7 @@
 
 .range-container input[type="range"] {
   -webkit-appearance: none;
-  width: 80%;
+  width: 100%;
   height: 8px;
   border-radius: 5px;
   background: #d3d3d3;

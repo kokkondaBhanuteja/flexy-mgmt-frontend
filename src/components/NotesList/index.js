@@ -20,7 +20,7 @@ const NotesList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [deletingId, setDeletingId] = useState(null); // New state for tracking deletion
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     const fetchFlexys = async () => {
@@ -33,7 +33,7 @@ const NotesList = () => {
             limit: ITEMS_PER_PAGE,
           },
         });
-        const responseData = response.data.data; 
+        const responseData = response.data.data;
         setFlexys(responseData.data || []);
         setTotalPages(Math.ceil(responseData.total / ITEMS_PER_PAGE));
         setStatus(STATUS.SUCCESS);
@@ -42,7 +42,7 @@ const NotesList = () => {
         setStatus(STATUS.FAILURE);
       }
     };
-    
+
     const timerId = setTimeout(() => {
       fetchFlexys();
     }, 500);
@@ -56,17 +56,15 @@ const NotesList = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this hoarding? This action cannot be undone.')) {
-      setDeletingId(id); // Set the ID of the item being deleted
+      setDeletingId(id);
       try {
         await axios.delete(`${API_URL}/hoardings/${id}`);
-        // Refetch after delete to ensure data consistency
         const response = await axios.get(`${API_URL}/hoardings`, {
             params: { search: searchTerm, page: currentPage, limit: ITEMS_PER_PAGE },
         });
         const responseData = response.data.data;
         setFlexys(responseData.data || []);
         setTotalPages(Math.ceil(responseData.total / ITEMS_PER_PAGE));
-        // Go to previous page if the last item on a page was deleted
         if (responseData.data.length === 0 && currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
@@ -74,7 +72,7 @@ const NotesList = () => {
         console.error("Failed to delete hoarding:", error);
         alert("Failed to delete hoarding. Please try again.");
       } finally {
-        setDeletingId(null); // Reset deleting ID
+        setDeletingId(null);
       }
     }
   };
@@ -109,7 +107,6 @@ const NotesList = () => {
           <div className="notes-list">
             {flexys.map((flexy) => (
               <div key={flexy._id} className="note-item">
-                {/* --- Deleting Overlay --- */}
                 {deletingId === flexy._id && (
                   <div className="deleting-overlay">
                     <LoadingView />
@@ -159,20 +156,22 @@ const NotesList = () => {
   };
 
   return (
-    <div className="notes-list-container">
-      <div className="header-section">
-        <h1>All Flexy's</h1>
-        <div className="search-container">
-          <input
-            type="search"
-            className="search-input"
-            placeholder="Search by name, owner, address, status..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+    <div className="notes-list-page">
+        <div className="notes-list-container">
+            <div className="header-section">
+                <h1>All Flexy's</h1>
+                <div className="search-container">
+                    <input
+                        type="search"
+                        className="search-input"
+                        placeholder="Search by name, owner, address, status..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+            {renderView()}
         </div>
-      </div>
-      {renderView()}
     </div>
   );
 };

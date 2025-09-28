@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useJsApiLoader } from '@react-google-maps/api';
 import MapComponent from '../MapComponent';
 import FlexyForm from '../FlexyForm';
 import LoadingView from '../LoadingView';
 import './index.css';
+
+const API_URL = process.env.REACT_APP_BACKEND_API;
+const MAPS_API = process.env.REACT_APP_GOOGLE_MAPS_API;
+
+// Define libraries outside the component to prevent re-renders
+const libraries = ['places', 'geometry'];
 
 const fallbackCenter = {
   lat: 17.9689, 
@@ -12,6 +19,13 @@ const fallbackCenter = {
 const Home = () => {
   const [currentCenter, setCurrentCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
+  
+  // --- Add the script loader here ---
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: MAPS_API,
+    libraries: libraries,
+  });
 
   useEffect(() => {
     const geoOptions = {
@@ -48,8 +62,13 @@ const Home = () => {
     const lng = event.latLng.lng();
     setMarkerPosition({ lat, lng });
   };
-
-  if (!currentCenter) {
+  
+  // Conditionally render based on script loading status and location fetching
+  if (loadError) {
+    return <div>Map cannot be loaded. Please try again later.</div>;
+  }
+  
+  if (!isLoaded || !currentCenter) {
     return <LoadingView />;
   }
 
