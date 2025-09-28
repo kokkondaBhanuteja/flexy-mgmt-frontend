@@ -100,7 +100,7 @@ const ImageUpload = ({ onImageUpload, existingImageUrl, onImageRemove }) => {
     <div className="image-upload-container">
       <input
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/heic"
         onChange={handleImageChange}
         ref={fileInputRef}
         style={{ display: 'none' }}
