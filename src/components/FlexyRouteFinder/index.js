@@ -1,16 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { Autocomplete } from "@react-google-maps/api"; // Removed useJsApiLoader
 import LoadingView from "../LoadingView";
 import FailureView from "../FailureView";
 import MapComponent from "../MapComponent";
 import "./index.css";
 
 const API_URL = process.env.REACT_APP_BACKEND_API;
-const MAPS_API = process.env.REACT_APP_GOOGLE_MAPS_API;
-
-// Define libraries outside the component to prevent re-renders
-const libraries = ["places", "geometry"];
 
 const STATUS = {
   LOADING: "loading",
@@ -24,17 +20,12 @@ const FlexyRouteFinder = () => {
   const [destination, setDestination] = useState("");
   const [markers, setMarkers] = useState([]);
   const [directions, setDirections] = useState(null);
-  const [radius, setRadius] = useState(15); // Default radius in km
+  const [radius, setRadius] = useState(2); // Default radius in km
 
   const sourceAutocomplete = useRef(null);
   const destinationAutocomplete = useRef(null);
 
-  // --- Add the script loader here ---
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: MAPS_API,
-    libraries: libraries,
-  });
+  // REMOVED: Script loader
 
   const fetchAllFlexys = useCallback(async () => {
     setStatus(STATUS.LOADING);
@@ -50,13 +41,21 @@ const FlexyRouteFinder = () => {
   }, []);
 
   useEffect(() => {
-    fetchAllFlexys();
+    // Check if the map service is available before making map-dependent calls
+    if (window.google) {
+        fetchAllFlexys();
+    }
   }, [fetchAllFlexys]);
 
   const handleRouteSearch = async () => {
     if (!source || !destination) {
       alert("Please enter both a source and a destination.");
       return;
+    }
+    
+    if (!window.google) {
+        alert("Map service is not yet loaded. Please wait a moment.");
+        return;
     }
 
     setStatus(STATUS.LOADING);
@@ -110,7 +109,7 @@ const FlexyRouteFinder = () => {
     setSource("");
     setDestination("");
     setDirections(null);
-    setRadius(15);
+    setRadius(2);
     fetchAllFlexys();
   };
 
@@ -136,16 +135,6 @@ const FlexyRouteFinder = () => {
     }
   };
 
-  // Conditionally render based on script loading status
-  if (loadError) {
-    return (
-      <FailureView message="Map cannot be loaded. Please check your API key and try again." />
-    );
-  }
-
-  if (!isLoaded) {
-    return <LoadingView />;
-  }
 
   const renderLoadingView = () => <LoadingView />;
   const renderFailureView = () => (

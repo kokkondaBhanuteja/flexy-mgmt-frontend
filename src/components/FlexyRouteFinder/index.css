@@ -15,6 +15,22 @@
   flex-direction: column;
   gap: 15px;
   align-items: center;
+  width: 100%;
+  max-width: 800px;  /* Keeps it neat on desktops */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    width: 90%;       /* Shrinks to fit small screens */
+    padding: 20px;    /* Reduce padding */
+  }
+
+  .route-finder-title {
+    font-size: 1.2rem;
+    text-align: center;
+  }
 }
 
 .route-finder-title {
@@ -120,3 +136,4 @@
   background: #0A74DA;
   cursor: pointer;
 }
+

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import LoadingView from '../LoadingView';
@@ -22,33 +22,34 @@ const NotesList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(() => {
-    const fetchFlexys = async () => {
-      setStatus(STATUS.LOADING);
-      try {
-        const response = await axios.get(`${API_URL}/hoardings`, {
-          params: {
-            search: searchTerm,
-            page: currentPage,
-            limit: ITEMS_PER_PAGE,
-          },
-        });
-        const responseData = response.data.data;
-        setFlexys(responseData.data || []);
-        setTotalPages(Math.ceil(responseData.total / ITEMS_PER_PAGE));
-        setStatus(STATUS.SUCCESS);
-      } catch (error) {
-        console.error("Failed to fetch flexys:", error);
-        setStatus(STATUS.FAILURE);
-      }
-    };
+  const fetchFlexys = useCallback(async () => {
+    if (deletingId) return;
+    setStatus(STATUS.LOADING); 
+    try {
+      const response = await axios.get(`${API_URL}/hoardings`, {
+        params: {
+          search: searchTerm,
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+        },
+      });
+      const responseData = response.data.data;
+      setFlexys(responseData.data || []);
+      setTotalPages(Math.ceil(responseData.total / ITEMS_PER_PAGE));
+      setStatus(STATUS.SUCCESS);
+    } catch (error) {
+      console.error("Failed to fetch flexys:", error);
+      setStatus(STATUS.FAILURE);
+    }
+  }, [searchTerm, currentPage, deletingId]);
 
+  useEffect(() => {
     const timerId = setTimeout(() => {
       fetchFlexys();
     }, 500);
 
     return () => clearTimeout(timerId);
-  }, [searchTerm, currentPage]);
+  }, [fetchFlexys]); 
 
   useEffect(() => {
     setCurrentPage(1);
@@ -60,13 +61,13 @@ const NotesList = () => {
       try {
         await axios.delete(`${API_URL}/hoardings/${id}`);
         const response = await axios.get(`${API_URL}/hoardings`, {
-            params: { search: searchTerm, page: currentPage, limit: ITEMS_PER_PAGE },
+          params: { search: searchTerm, page: currentPage, limit: ITEMS_PER_PAGE },
         });
         const responseData = response.data.data;
         setFlexys(responseData.data || []);
         setTotalPages(Math.ceil(responseData.total / ITEMS_PER_PAGE));
         if (responseData.data.length === 0 && currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+          setCurrentPage(currentPage - 1);
         }
       } catch (error) {
         console.error("Failed to delete hoarding:", error);
@@ -77,9 +78,13 @@ const NotesList = () => {
     }
   };
 
+  const handleRetry = () => {
+    fetchFlexys(); 
+  };
+
   const renderLoadingView = () => <LoadingView />;
   const renderFailureView = () => (
-    <FailureView message="Something went wrong. Please try again." onRetry={() => setCurrentPage(1)} />
+    <FailureView message="Something went wrong. Please try again." onRetry={handleRetry} />
   );
 
   const renderNoResultsView = () => (
@@ -157,21 +162,19 @@ const NotesList = () => {
 
   return (
     <div className="notes-list-page">
-        <div className="notes-list-container">
-            <div className="header-section">
-                <h1>All Flexy's</h1>
-                <div className="search-container">
-                    <input
-                        type="search"
-                        className="search-input"
-                        placeholder="Search by name, owner, address, status..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-            </div>
-            {renderView()}
+      <div className="notes-list-container">
+        <div className="header-section">
+          <h1>All Flexy's</h1>
+          <input
+            type="search"
+            className="search-input"
+            placeholder="Search by name, owner, address, status..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
+        {renderView()}
+      </div>
     </div>
   );
 };

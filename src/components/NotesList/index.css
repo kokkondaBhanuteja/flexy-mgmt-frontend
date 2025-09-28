@@ -1,195 +1,230 @@
-/* Scoped container for the entire notes list page */
-.notes-list-page {
-  /* Set a background for the whole page area */
-  background-color: #f9fafb;
-  padding: 50px 0; /* Add vertical padding, remove horizontal */
+.notes-list-container {
+  padding: 20px;
 }
 
-.notes-list-page .notes-list-container {
-  /* Center the main content area */
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px; /* Add horizontal padding here for spacing from screen edges */
-}
-
-.notes-list-page .header-section {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.notes-list-page .header-section h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #1f2937;
-  letter-spacing: -1px;
-}
-
-/* --- Search Bar --- */
-.notes-list-page .search-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.notes-list-page .search-input {
-  width: 100%;
-  padding: 15px 25px 15px 50px;
-  border-radius: 50px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-  color: #1f2937;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%236b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
-  background-repeat: no-repeat;
-  background-position: 20px center;
-}
-
-.notes-list-page .search-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-}
-
-/* --- Hoarding Cards Grid --- */
-.notes-list-page .notes-list {
+.notes-list {
   display: grid;
-  /* This creates columns that are at least 300px wide, but will grow to fill the space */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 35px; /* The space between cards */
-  justify-items: center; /* This will center the items within their grid cell */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
 }
 
-.notes-list-page .note-item {
-  width: 100%; /* Ensure card takes full width of its column */
-  max-width: 350px; /* Optional: set a max-width for very large screens */
-  border-radius: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  display: flex; /* Use flexbox to better control inner content */
+.note-item {
+  border: 1px solid #e9ecef;
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.notes-list-page .note-item:hover {
+.note-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.notes-list-page .note-item .flexy-image {
+.note-item .flexy-image {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
-.notes-list-page .flexy-details {
+.flexy-details {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* This makes the details section fill the remaining card space */
+  flex-grow: 1; /* Ensures this container fills the card */
 }
 
-.notes-list-page .note-item h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #3b82f6;
-  margin-bottom: 12px;
+.note-item h3 {
+  margin-top: 0;
+  color: #0a74da;
 }
 
-.notes-list-page .flexy-details p {
-  font-size: 0.95rem;
-  color: #4b5563;
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
-
-.notes-list-page .note-item-actions {
-  margin-top: auto; /* Pushes buttons to the bottom of the card */
-  padding-top: 20px; /* Add some space above the buttons */
+.note-item-actions {
+  margin-top: auto; /* Pushes the buttons to the bottom */
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
-.notes-list-page .view-details-btn,
-.notes-list-page .delete-btn {
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+.view-details-btn {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #0a74da;
+  color: white;
   text-align: center;
-  flex-grow: 1; /* Make buttons take equal width */
-  transition: all 0.2s ease-in-out;
-}
-
-.notes-list-page .view-details-btn {
-  background-color: #3b82f6;
-  color: white;
+  border-radius: 6px;
   text-decoration: none;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
 }
 
-.notes-list-page .view-details-btn:hover {
-  background-color: #2563eb;
+.view-details-btn:hover {
+  background-color: #085da8;
 }
 
-.notes-list-page .delete-btn {
-  background-color: #ef4444;
-  color: white;
+.delete-btn {
+  padding: 8px 12px;
   border: none;
+  background-color: #dc3545; /* Red */
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: "Poppins", sans-serif;
+  transition: background-color 0.3s;
 }
 
-.notes-list-page .delete-btn:hover {
-  background-color: #dc2626;
+.delete-btn:hover {
+  background-color: #c82333; /* Darker Red */
 }
 
-/* --- Pagination --- */
-.notes-list-page .pagination-controls {
+.no-results-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  min-height: 70vh; /* Ensure it takes up enough vertical space */
+}
+
+.no-results-img {
+  width: 350px; /* Made bigger */
+  height: 350px; /* Made bigger */
+  margin-bottom: 20px;
+}
+
+.status-message {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin: 5px 0; /* Adjust spacing between messages */
+}
+
+@media (max-width: 600px) {
+  .notes-list {
+    grid-template-columns: 1fr;
+  }
+  .no-results-img {
+    width: 250px;
+    height: 250px;
+  }
+}
+/* Add these new styles to the bottom of the file */
+
+.header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers horizontally */
+  justify-content: center; /* Centers vertically if needed */
+  margin-bottom: 30px;
+}
+
+.header-section h1 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center; 
+}
+
+.search-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 14px 20px;
+  border-radius: 50px; /* Pill shape */
+  border: 1px solid #dfe1e5;
+  font-size: 1rem;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease-in-out;
+  -webkit-appearance: none; /* Removes default browser styling on iOS */
+}
+
+.search-input::placeholder {
+  color: #9aa0a6;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+.no-results-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.no-results-img {
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+
+.status-message {
+  color: #5f6368;
+  font-size: 1.1rem;
+}
+/* --- Add these styles for Pagination --- */
+
+.pagination-controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
-.notes-list-page .pagination-controls button {
-  background-color: #3b82f6;
+.pagination-controls button {
+  background-color: #4a90e2;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
   transition: background-color 0.3s ease;
 }
 
-.notes-list-page .pagination-controls button:hover:not(:disabled) {
-  background-color: #2563eb;
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #357abd;
 }
 
-.notes-list-page .pagination-controls button:disabled {
-  background-color: #9ca3af;
+.pagination-controls button:disabled {
+  background-color: #cccccc;
   cursor: not-allowed;
 }
 
-.notes-list-page .pagination-controls span {
-  margin: 0 25px;
-  font-size: 1.1rem;
-  color: #4b5563;
-  font-weight: 500;
+.pagination-controls span {
+  margin: 0 20px;
+  font-size: 1rem;
+  color: #333;
 }
 
-.notes-list-page .deleting-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 20;
-    border-radius: 16px;
+.note-item {
+  position: relative; /* Required for the overlay to position correctly */
+}
+
+.deleting-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 8px; /* Match the card's border-radius */
 }

@@ -20,6 +20,8 @@ const NoteDetails = () => {
   const [flexy, setFlexy] = useState(null);
   const [status, setStatus] = useState(STATUS.LOADING);
   const [mapCenter, setMapCenter] = useState(null);
+  // ADDED: State to hold the current marker position for editing
+  const [markerPosition, setMarkerPosition] = useState(null); 
 
   const fetchFlexy = useCallback(async () => {
     setStatus(STATUS.LOADING);
@@ -30,7 +32,10 @@ const NoteDetails = () => {
 
       if (fetchedFlexy && fetchedFlexy.location && fetchedFlexy.location.coordinates) {
         const [lng, lat] = fetchedFlexy.location.coordinates;
-        setMapCenter({ lat, lng });
+        const location = { lat, lng };
+        setMapCenter(location);
+        // INIT: Set the marker position to the existing flexy's location
+        setMarkerPosition(location); 
       }
       setStatus(STATUS.SUCCESS);
     } catch (error) {
@@ -42,6 +47,15 @@ const NoteDetails = () => {
   useEffect(() => {
     fetchFlexy();
   }, [fetchFlexy]);
+
+  // ADDED: Function to update the marker position on map click
+  const handleMapClick = (event) => {
+    if (!event.latLng) return;
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+    setMarkerPosition({ lat, lng });
+    setMapCenter({ lat, lng }); // Also center the map on the new marker
+  };
 
   const renderLoadingView = () => <LoadingView />;
   const renderFailureView = () => <FailureView message="Failed to fetch flexy details." onRetry={fetchFlexy} />;
@@ -56,13 +70,32 @@ const NoteDetails = () => {
       );
     }
 
+    // Create a marker object from the state for MapComponent
+    const markersForMap = markerPosition
+    ? [
+        {
+          ...flexy, // Spread existing flexy data
+          _id: flexy._id, 
+          location: {
+            coordinates: [markerPosition.lng, markerPosition.lat],
+          },
+          // Ensure imageUrl is present for MapComponent InfoWindow logic
+          imageUrl: flexy.imageUrl || 'https://res.cloudinary.com/disrq2eh8/image/upload/v1758967291/placeholder_ww4rii.png', 
+        },
+      ]
+    : [];
+    
     return (
       <div className="note-details-container">
         <MapComponent
-          markers={flexy ? [flexy] : []}
+          markers={markersForMap} 
           center={mapCenter}
+          onMapClick={handleMapClick} // ADDED: Allow re-pinning the location
         />
-        <FlexyForm existingFlexy={flexy} pinnedLocation={mapCenter} />
+        <FlexyForm 
+          existingFlexy={flexy} 
+          pinnedLocation={markerPosition} // PASS: The updatable marker position
+        />
       </div>
     );
   };
