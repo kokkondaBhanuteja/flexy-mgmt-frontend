@@ -1,0 +1,63 @@
+.route-finder-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - 80px);
+}
+
+.search-container {
+  margin-bottom: 20px;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-container input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 200px;
+}
+
+.search-container button {
+  padding: 10px 15px; /* Smaller button */
+  border: none;
+  background-color: #0A74DA;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem; /* Smaller font */
+  flex-shrink: 0;
+  transition: background-color 0.3s;
+}
+
+.search-container button:hover {
+  background-color: #085da8;
+}
+
+.clear-btn {
+  background-color: #6c757d;
+}
+
+.clear-btn:hover {
+  background-color: #5a6268;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container input,
+  .search-container button {
+    width: 80%;
+  }
+}

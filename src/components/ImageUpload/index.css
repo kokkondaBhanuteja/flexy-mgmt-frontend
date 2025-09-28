@@ -1,0 +1,110 @@
+.image-upload-container {
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed #ced4da;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8f9fa;
+}
+
+.upload-options {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+}
+
+.action-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+  background-color: #0056b3;
+}
+
+.camera-view {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-feed {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.capture-btn {
+  background-color: #28a745; /* Green */
+}
+.capture-btn:hover {
+  background-color: #218838;
+}
+
+.close-btn-cam {
+  background-color: #dc3545; /* Red */
+}
+.close-btn-cam:hover {
+  background-color: #c82333;
+}
+
+.image-preview {
+  margin-top: 10px;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.remove-btn:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 10px;
+}

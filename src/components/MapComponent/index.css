@@ -1,0 +1,30 @@
+.map-container-inner {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* New class for the Google Map component's container */
+.map-google-container {
+  width: 100%;
+  height: 500px; /* Default height */
+}
+
+/* --- Responsive Adjustments --- */
+
+/* On smaller screens (phones), make the map container wider */
+@media (max-width: 767px) {
+  .map-container-inner {
+    min-width: 300px; /* Use most of the screen width */
+  }
+}
+
+/* On larger screens (tablets and desktops), make the map taller */
+@media (min-width: 768px) {
+  .map-google-container {
+    height: 650px; /* Increased height for large devices */
+  }
+}
