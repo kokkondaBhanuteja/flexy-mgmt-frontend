@@ -30,8 +30,8 @@ const FlexyRouteFinder = () => {
   const fetchAllFlexys = useCallback(async () => {
     setStatus(STATUS.LOADING);
     try {
-      const response = await axios.get(`${API_URL}/hoardings`);
-      const fetchedFlexys = response.data.data.data || [];
+      const response = await axios.get(`${API_URL}/hoardings/all`);
+      const fetchedFlexys = response.data.data || [];
       setMarkers(fetchedFlexys);
       setStatus(STATUS.SUCCESS);
     } catch (error) {
