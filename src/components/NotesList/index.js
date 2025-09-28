@@ -164,7 +164,7 @@ const NotesList = () => {
         <h1>All Flexy's</h1>
         <div className="search-container">
           <input
-            type="text"
+            type="search"
             className="search-input"
             placeholder="Search by name, owner, address, status..."
             value={searchTerm}

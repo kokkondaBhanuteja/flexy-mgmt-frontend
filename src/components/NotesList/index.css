@@ -148,6 +148,7 @@
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
   -webkit-appearance: none; /* Removes default browser styling on iOS */
 }
 

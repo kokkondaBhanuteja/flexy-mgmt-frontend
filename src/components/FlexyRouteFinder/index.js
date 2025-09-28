@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
+import { Autocomplete } from '@react-google-maps/api';
 import LoadingView from '../LoadingView';
 import FailureView from '../FailureView';
 import MapComponent from '../MapComponent';
@@ -19,6 +20,10 @@ const FlexyRouteFinder = () => {
   const [destination, setDestination] = useState('');
   const [markers, setMarkers] = useState([]);
   const [directions, setDirections] = useState(null);
+  const [radius, setRadius] = useState(15); // Default radius in km
+
+  const sourceAutocomplete = useRef(null);
+  const destinationAutocomplete = useRef(null);
 
   const fetchAllFlexys = useCallback(async () => {
     setStatus(STATUS.LOADING);
@@ -27,7 +32,7 @@ const FlexyRouteFinder = () => {
       const fetchedFlexys = response.data.data.data || [];
       setMarkers(fetchedFlexys);
       setStatus(STATUS.SUCCESS);
-    } catch (error)      {
+    } catch (error) {
       console.error("Failed to fetch flexys:", error);
       setStatus(STATUS.FAILURE);
     }
@@ -72,6 +77,7 @@ const FlexyRouteFinder = () => {
       const response = await axios.post(`${API_URL}/hoardings/find-in-between`, {
         source: [sourceCoords.lng(), sourceCoords.lat()],
         destination: [destCoords.lng(), destCoords.lat()],
+        radius: radius,
       });
 
       const alongRouteFlexys = response.data.data || [];
@@ -88,7 +94,30 @@ const FlexyRouteFinder = () => {
     setSource('');
     setDestination('');
     setDirections(null);
+    setRadius(15);
     fetchAllFlexys();
+  };
+
+  const onSourceLoad = (autocomplete) => {
+    sourceAutocomplete.current = autocomplete;
+  };
+
+  const onDestinationLoad = (autocomplete) => {
+    destinationAutocomplete.current = autocomplete;
+  };
+
+  const onSourcePlaceChanged = () => {
+    if (sourceAutocomplete.current) {
+      const place = sourceAutocomplete.current.getPlace();
+      setSource(place.formatted_address);
+    }
+  };
+
+  const onDestinationPlaceChanged = () => {
+    if (destinationAutocomplete.current) {
+      const place = destinationAutocomplete.current.getPlace();
+      setDestination(place.formatted_address);
+    }
   };
 
   const renderLoadingView = () => <LoadingView />;
@@ -97,18 +126,39 @@ const FlexyRouteFinder = () => {
   const renderSuccessView = () => (
     <div className="route-finder-container">
         <div className="search-container">
-          <input
-            type="text"
-            placeholder="Enter starting point"
-            value={source}
-            onChange={(e) => setSource(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Enter destination"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          />
+          <Autocomplete
+            onLoad={onSourceLoad}
+            onPlaceChanged={onSourcePlaceChanged}
+          >
+            <input
+              type="text"
+              placeholder="Enter starting point"
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+            />
+          </Autocomplete>
+          <Autocomplete
+            onLoad={onDestinationLoad}
+            onPlaceChanged={onDestinationPlaceChanged}
+          >
+            <input
+              type="text"
+              placeholder="Enter destination"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+            />
+          </Autocomplete>
+          <div className="range-container">
+            <label htmlFor="radius">Search Radius: {radius} km</label>
+            <input
+              type="range"
+              id="radius"
+              min="1"
+              max="50"
+              value={radius}
+              onChange={(e) => setRadius(e.target.value)}
+            />
+          </div>
           <button onClick={handleRouteSearch}>Find Hoardings</button>
           <button onClick={clearRoute} className="clear-btn">Clear</button>
         </div>
