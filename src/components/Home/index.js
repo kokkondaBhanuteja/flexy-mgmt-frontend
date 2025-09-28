@@ -26,14 +26,11 @@ const Home = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           const userLocation = { lat: latitude, lng: longitude };
-          // --- FIX ---
-          // Set BOTH the map center and the marker position with the detected location
           setCurrentCenter(userLocation);
-          setMarkerPosition(userLocation); // This will auto-fill the form
+          setMarkerPosition(userLocation); 
         },
         () => {
           console.error("Could not get location. Defaulting to fallback.");
-          // Alert the user and then set a fallback
           alert(
             "Could not get your location. Please ensure you have enabled location permissions for this site in your browser settings (check the lock icon in the address bar)."
           );
@@ -61,7 +58,6 @@ const Home = () => {
     return <LoadingView />;
   }
 
-  // This logic remains the same, creating a marker from the markerPosition state
   const markersForMap = markerPosition
     ? [
         {
@@ -82,7 +78,6 @@ const Home = () => {
         markers={markersForMap}
         center={currentCenter}
       />
-      {/* The form now receives the auto-detected location via markerPosition */}
       <FlexyForm pinnedLocation={markerPosition} />
     </div>
   );
